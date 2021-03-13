@@ -7,20 +7,15 @@ import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
 import com.grack.nanojson.JsonWriter;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
 import org.schabi.newpipe.extractor.localization.DateWrapper;
-import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 public class BandcampExtractorHelper {
