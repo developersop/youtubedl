@@ -154,11 +154,11 @@ public class StreamInfo extends Info {
 
         // Lists can be null if a exception was thrown during extraction
         if (streamInfo.getVideoStreams() == null)
-            streamInfo.setVideoStreams(new ArrayList<VideoStream>());
+            streamInfo.setVideoStreams(Collections.emptyList());
         if (streamInfo.getVideoOnlyStreams() == null)
-            streamInfo.setVideoOnlyStreams(new ArrayList<VideoStream>());
+            streamInfo.setVideoOnlyStreams(Collections.emptyList());
         if (streamInfo.getAudioStreams() == null)
-            streamInfo.setAudioStreams(new ArrayList<AudioStream>());
+            streamInfo.setAudioStreams(Collections.emptyList());
 
         Exception dashMpdError = null;
         if (!isNullOrEmpty(streamInfo.getDashMpdUrl())) {
