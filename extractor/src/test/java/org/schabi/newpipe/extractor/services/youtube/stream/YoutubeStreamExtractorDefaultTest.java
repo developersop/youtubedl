@@ -8,7 +8,11 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
+import org.schabi.newpipe.extractor.exceptions.GeographicRestrictionException;
+import org.schabi.newpipe.extractor.exceptions.PaidContentException;
 import org.schabi.newpipe.extractor.exceptions.ParsingException;
+import org.schabi.newpipe.extractor.exceptions.PrivateContentException;
+import org.schabi.newpipe.extractor.exceptions.YoutubeMusicPremiumContentException;
 import org.schabi.newpipe.extractor.services.DefaultStreamExtractorTest;
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper;
 import org.schabi.newpipe.extractor.stream.Description;
@@ -16,13 +20,14 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.StreamSegment;
 import org.schabi.newpipe.extractor.stream.StreamType;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -59,6 +64,13 @@ public class YoutubeStreamExtractorDefaultTest {
             NewPipe.init(new DownloaderFactory().getDownloader(RESOURCE_PATH + "notAvailable"));
         }
 
+        @Test(expected = GeographicRestrictionException.class)
+        public void geoRestrictedContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "_PL2HJKxnOM");
+            extractor.fetchPage();
+        }
+
         @Test(expected = ContentNotAvailableException.class)
         public void nonExistentFetch() throws Exception {
             final StreamExtractor extractor =
@@ -70,6 +82,27 @@ public class YoutubeStreamExtractorDefaultTest {
         public void invalidId() throws Exception {
             final StreamExtractor extractor =
                     YouTube.getStreamExtractor(BASE_URL + "INVALID_ID_INVALID_ID");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = PaidContentException.class)
+        public void paidContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "ayI2iBwGdxw");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = PrivateContentException.class)
+        public void privateContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "8VajtrESJzA");
+            extractor.fetchPage();
+        }
+
+        @Test(expected = YoutubeMusicPremiumContentException.class)
+        public void youtubeMusicPremiumContent() throws Exception {
+            final StreamExtractor extractor =
+                    YouTube.getStreamExtractor(BASE_URL + "sMJ8bRN2dak");
             extractor.fetchPage();
         }
     }
@@ -140,10 +173,10 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public String expectedUploaderName() { return "Unbox Therapy"; }
         @Override public String expectedUploaderUrl() { return "https://www.youtube.com/channel/UCsTcErHg8oDvUnTzoqsYeNw"; }
         @Override public List<String> expectedDescriptionContains() {
-            return Arrays.asList("https://www.youtube.com/watch?v=X7FLCHVXpsA&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
-                    "https://www.youtube.com/watch?v=Lqv6G0pDNnw&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
-                    "https://www.youtube.com/watch?v=XxaRBPyrnBU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
-                    "https://www.youtube.com/watch?v=U-9tUEOFKNU&amp;list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34");
+            return Arrays.asList("https://www.youtube.com/watch?v=X7FLCHVXpsA&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
+                    "https://www.youtube.com/watch?v=Lqv6G0pDNnw&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
+                    "https://www.youtube.com/watch?v=XxaRBPyrnBU&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34",
+                    "https://www.youtube.com/watch?v=U-9tUEOFKNU&list=PL7u4lWXQ3wfI_7PgX0C-VTiwLeu0S4v34");
         }
         @Override public long expectedLength() { return 434; }
         @Override public long expectedViewCountAtLeast() { return 21229200; }
@@ -153,16 +186,9 @@ public class YoutubeStreamExtractorDefaultTest {
         @Override public long expectedDislikeCountAtLeast() { return 18700; }
         @Override public boolean expectedUploaderVerified() { return true; }
         // @formatter:on
-        @Override
-        @Test
-        @Ignore("TODO fix")
-        public void testDescription() throws Exception {
-            super.testDescription();
-        }
-
     }
 
-    @Ignore("TODO fix")
+    @Ignore("Test broken, video was made private")
     public static class RatingsDisabledTest extends DefaultStreamExtractorTest {
         private static final String ID = "HRKu0cvrr_o";
         private static final int TIMESTAMP = 17;
@@ -344,20 +370,6 @@ public class YoutubeStreamExtractorDefaultTest {
         }
         @Override public boolean expectedUploaderVerified() { return true; }
         // @formatter:on
-        @Override
-        @Ignore("TODO fix")
-        @Test
-        public void testUploaderName() throws Exception {
-            super.testUploaderName();
-        }
-
-        @Override
-        @Ignore("TODO fix")
-        @Test
-        public void testMetaInfo() throws Exception {
-            super.testMetaInfo();
-        }
-
     }
 
 }
